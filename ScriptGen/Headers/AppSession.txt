@@ -1,0 +1,55 @@
+﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
+using OpenQA.Selenium.Appium.Windows;
+using OpenQA.Selenium.Remote;
+using OpenQA.Selenium;
+using System;
+
+
+namespace %%NAMESPACE%%
+{
+    public class %%APPNAME%%Session
+    {
+        protected const string WindowsApplicationDriverUrl = "http://127.0.0.1:4723";
+        private const string NotepadAppId = @"%%EXELOCATION%%";
+
+        protected static WindowsDriver<WindowsElement> session;
+        protected static WindowsElement infoBox;
+        protected static WindowsElement statusBox;
+
+        public static void Setup(TestContext context)
+        {
+            // Launch a new instance of application
+            if (session == null)
+            {
+                // Create a new session to launch application
+                DesiredCapabilities appCapabilities = new DesiredCapabilities();
+                appCapabilities.SetCapability("app", NotepadAppId);
+                session = new WindowsDriver<WindowsElement>(new Uri(WindowsApplicationDriverUrl), appCapabilities);
+                Assert.IsNotNull(session);
+                Assert.IsNotNull(session.SessionId);
+
+
+                // Set implicit timeout to 1.5 seconds to make element search to retry every 500 ms for at most three times
+                session.Manage().Timeouts().ImplicitWait = TimeSpan.FromSeconds(1.5);
+            }
+        }
+
+        public static void TearDown()
+        {
+            // Close the application and delete the session
+            if (session != null)
+            {
+                session.Close();
+                session.Quit();
+                session = null;
+            }
+        }
+
+        [TestInitialize]
+        public void TestInitialize()
+        {
+
+        }
+
+    }
+}
